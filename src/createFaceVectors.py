@@ -15,17 +15,12 @@ arr3 = []
 arr4 = []
 
 
-out1 = open("out1.csv", 'wb')
+out1 = open("faces.csv", 'wb')
 wr1 = csv.writer(out1, quoting=csv.QUOTE_NONE, escapechar=' ')
 
-out2 = open("out2.csv", 'wb')
+out2 = open("nonfaces.csv", 'wb')
 wr2 = csv.writer(out2, quoting=csv.QUOTE_NONE, escapechar=' ')
 
-out3 = open("out3.csv", 'wb')
-wr3 = csv.writer(out3, quoting=csv.QUOTE_NONE, escapechar=' ')
-
-out4 = open("out4.csv", 'wb')
-wr4 = csv.writer(out4, quoting=csv.QUOTE_NONE, escapechar=' ')
 
 
 #myfile = open("facevectors.csv", 'wb')
@@ -53,13 +48,14 @@ def createVector(value, img, wrFile):
 	#make 1-d array
 	flat_arr = arr.ravel()
 
+	print(flat_arr)
 	#append 
 	temp.append(value)
-	for val in flat_arr:
-		temp.append(val)
+	#for val in flat_arr:
+	#	temp.append(val)
 
 	#write record to csv file
-	wrFile.writerow(temp)
+	#wrFile.writerow(temp)
 
 
 
@@ -88,12 +84,12 @@ def spawThreads(a1, a2, a3, a4):
 	#loadimages(a1, 1, wr1)
 	t1 = threading.Thread(target=loadimages, args=[a1, 1, wr1])
 	t2 = threading.Thread(target=loadimages, args=[a2, 1, wr2])
-	t3 = threading.Thread(target=loadimages, args=[a3, 1, wr3])
-	t4 = threading.Thread(target=loadimages, args=[a4, 1, wr4])
+	#t3 = threading.Thread(target=loadimages, args=[a3, 1, wr3])
+	#t4 = threading.Thread(target=loadimages, args=[a4, 1, wr4])
 	t1.start()
 	t2.start()
-	t3.start()
-	t4.start()
+	#t3.start()
+	#opet4.start()
 
 #read and parse command line arguments
 if len(sys.argv) > 1:
