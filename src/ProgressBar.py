@@ -1,5 +1,5 @@
 # Print iterations progress
-def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█'):
+def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '#'):
     """
     Call in a loop to create terminal progress bar
     @params:
@@ -39,4 +39,3 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
 #     printProgressBar(i, l, prefix = 'Progress:', suffix = 'Complete', length = 50)
 
 # # Sample Output
-# Progress: |█████████████████████████████████████████████-----| 90.0% Complete
