@@ -1,15 +1,4 @@
-import numpy as np
-from tables import *
 
-# Generate some data
-x = np.random.random((100,100,100))
-
-# Store "x" in a chunked array...
-f = tables.openFile('test.hdf', 'w')
-atom = tables.Atom.from_dtype(x.dtype)
-ds = f.createCArray(f.root, 'somename', atom, x.shape)
-ds[:] = x
-f.close()
 
 # from PIL import Image
 # from os import listdir
@@ -31,3 +20,16 @@ f.close()
 # 	ds = f.createCArray(f.root, 'imageVector', atom, x.shape)
 # 	ds[:] = x
 # 	f.close()
+import os as listdir
+import sys
+import numpy as np
+
+def splitPerc(l, perc):
+	list = listdir(l)
+	splits = np.cumsum(perc)/100
+	if splits[-1] != 1:
+		raise ValueError("percents don't add up to 100")
+	return np.split(list, splits[:-1]*len(l))
+
+print(splitPerc(sys.argv[1], sys.argv[2]))
+

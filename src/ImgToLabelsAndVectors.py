@@ -2,50 +2,77 @@ import numpy as np
 from os import listdir
 from PIL import Image
 import sys
+import threading 
 from ProgressBar import printProgressBar
 
-def loadimages(dir1, dir2, outputFile):
-	f = open(outputFile, 'w')
+def loadimages(dir1, dir2, outputFile, numImgs):
+
+	outFile1 = ""
+	outFile2 = ""
+	if outputFile.find(".txt") == -1:		
+		f = open(outputFile + "_" + numImgs + "_Training.txt", 'w') #training data records (70% of total images)
+		outFile1 = outputFile + "_" + numImgs + "_Training.txt" #setting name of output file
+		f1 = open(outputFile + "_" + numImgs + "_Testing.txt", 'w') # testing data records  (30 % of totla images)
+		outFile2 = outputFile + "_" + numImgs + "_Testing.txt"
+	else:
+		f = open("Training_" + outputFile, 'w') #training data records (70% of total images)
+		outFile1 = "Training_" + outputFile
+		f1 = open("Testing_" + outputFile, 'w') # testing data records  (30 % of totla images)
+		outFile2 = "Testing_" + outputFile
 
 	# Save face images
 	imagesOfFaces = listdir(dir1)
-	count = 0
-	l = len(imagesOfFaces)
-	print("Creating " + outputFile + " ...")
-	printProgressBar(count, l, prefix=" Transforming Face Images:", suffix = 'Complete', decimals = 3,length=100)
-	for faceImage in imagesOfFaces:
-		line = "1" # The number is 1 because this is a 'positive' example of a face.
-		faceImg = Image.open(dir1 + faceImage)
+	imagesOfNonFaces = listdir(dir2)
+
+	lFace = len(imagesOfFaces)
+	trainingFaceImgs = int((float(70) /float(100)) * float(numImgs))
+	testingFaceImgs = int(numImgs) - trainingFaceImgs
+
+	lNonFace = len(imagesOfNonFaces)
+	trainingNonFaceImgs = int((float(70) /float(100)) * float(numImgs))
+	testingNonFaceImgs = int(numImgs) - trainingNonFaceImgs
+	
+	#t1 writes 70% training data from face images and t2 writes 30% testing data for face images
+	t1 = threading.Thread(target=writeRecords, args=[dir1, 0, int(trainingFaceImgs), "Training face images",f, 1])
+	t2 = threading.Thread(target=writeRecords, args=[dir2, int(trainingFaceImgs)+1, int(trainingFaceImgs) + int(testingFaceImgs),"Testing face images", f1, 1])
+
+	t1.start()
+	t2.start()
+
+	t3 = threading.Thread(target=writeRecords, args=[dir1, 0, trainingNonFaceImgs, "Training non face images", f, 0])
+	t4 = threading.Thread(target=writeRecords, args=[dir2, trainingNonFaceImgs+1, trainingNonFaceImgs +testingNonFaceImgs, "Testing Nonface images",f1, 0])
+
+	#block thread t3 and t4 until t1 and t2 are finished 
+	t1.join()
+	t2.join()
+
+	t3.start()
+	t4.start()
+
+
+
+def writeRecords(dir, startIdx, endIdx, message, outputFile, label):
+	imagesOfFaces = listdir(dir)
+	#print("Creating " + outputFile + " ...")
+	printProgressBar(startIdx, endIdx, prefix= " " + message, suffix = 'Complete', decimals = 3,length=100)
+	for faceImage in imagesOfFaces[startIdx:endIdx]:
+		line = str(label) # The number is 1 because this is a 'positive' example of a face.
+		faceImg = Image.open(dir + faceImage)
 		imageArray = np.array(faceImg).ravel()
 		for pixelValue in imageArray:
 			line += " " + str(pixelValue)
 		line += "\n"
-		f.write(line)
-		count += 1
-		printProgressBar(count, l, prefix=" Transforming Face Images:", suffix = 'Complete', decimals = 3,length=100)
+		outputFile.write(line)
+		startIdx += 1
+		printProgressBar(startIdx, endIdx, prefix=" " + message, suffix = 'Complete', decimals = 3,length=100)
 
-	# Save non face images
-	count = 0
-	imagesOfNonFaces = listdir(dir2)
-	l = len(imagesOfNonFaces)
-	printProgressBar(count, l, prefix=" Transforming NonFace Images:", suffix = 'Complete',decimals = 3,length=100)
-	for nonFaceImage in imagesOfNonFaces:
-		line = "0" # The number is 0 because this is a 'negative' example of a face.
-		nonFaceImg = Image.open(dir2 + nonFaceImage)
-		nonFaceImageArray = np.array(nonFaceImg).ravel()
-		for pixelValue in nonFaceImageArray:
-			line += " " + str(pixelValue)
-		line += "\n"
-		f.write(line)
-		count += 1
-		printProgressBar(count, l, prefix=" Transforming NonFace Images:", suffix = 'Complete',decimals = 3,length=100)
-	f.close()
-	
+
+
 	
 #read and parse command line arguments
-if len(sys.argv) > 2:
-	loadimages(sys.argv[1], sys.argv[2], sys.argv[3])
+if len(sys.argv) > 3:
+	loadimages(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
 else:
-	print("usage: python3 ImgToLabelAndVectors.py <pos-img-dir-path> <neg-img-dir-path> <output-file-name.txt>")
+	print("usage: python3 ImgToLabelAndVectors.py <pos-img-dir-path> <neg-img-dir-path> <output-file-name.txt> <num-of-images-to-test>")
 
 
