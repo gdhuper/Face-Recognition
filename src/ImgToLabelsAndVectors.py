@@ -34,12 +34,12 @@ def loadimages(dir1, dir2, outputFile, numImgs):
 	
 	#t1 writes 70% training data from face images and t2 writes 30% testing data for face images
 	t1 = threading.Thread(target=writeRecords, args=[dir1, 0, int(trainingFaceImgs), "Training face images",f, 1])
-	t2 = threading.Thread(target=writeRecords, args=[dir2, int(trainingFaceImgs)+1, int(trainingFaceImgs) + int(testingFaceImgs),"Testing face images", f1, 1])
+	t2 = threading.Thread(target=writeRecords, args=[dir1, int(trainingFaceImgs)+1, int(trainingFaceImgs) + int(testingFaceImgs),"Testing face images", f1, 1])
 
 	t1.start()
 	t2.start()
 
-	t3 = threading.Thread(target=writeRecords, args=[dir1, 0, trainingNonFaceImgs, "Training non face images", f, 0])
+	t3 = threading.Thread(target=writeRecords, args=[dir2, 0, trainingNonFaceImgs, "Training non face images", f, 0])
 	t4 = threading.Thread(target=writeRecords, args=[dir2, trainingNonFaceImgs+1, trainingNonFaceImgs +testingNonFaceImgs, "Testing Nonface images",f1, 0])
 
 	#block thread t3 and t4 until t1 and t2 are finished 
@@ -48,6 +48,8 @@ def loadimages(dir1, dir2, outputFile, numImgs):
 
 	t3.start()
 	t4.start()
+
+
 
 
 
