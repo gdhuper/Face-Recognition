@@ -1,4 +1,4 @@
-cfrom pyspark.mllib.classification import SVMWithSGD, SVMModel
+from pyspark.mllib.classification import SVMWithSGD, SVMModel
 from pyspark.mllib.regression import LabeledPoint
 from PIL import Image, ImageDraw
 from pyspark import SparkContext
@@ -13,16 +13,18 @@ RED = (255, 0, 0)
 GREEN = (113,202,88)
 
 # Draws a rectangle around a 250x250 image
-def colorRectangle(imagePath, (r,g,b)):
+def colorRectangle(imagePath, color):
 	im = Image.open(imagePath)
 	draw = ImageDraw.Draw(im)
 	for i in range(6):
-		draw.line((i, 0,i,250), fill=(r,g,b))
-		draw.line((245 + i, 0,245 + i,250), fill=(r,g,b))
-		draw.line((0, i, 250, i), fill=(r,g,b))
-		draw.line((0, 245 + i, 250,245 + i), fill=(r,g,b))
+		draw.line((i, 0,i,250), fill=color)
+		draw.line((245 + i, 0,245 + i,250), fill=color)
+		draw.line((0, i, 250, i), fill=color)
+		draw.line((0, 245 + i, 250,245 + i), fill=color)
 	del draw
 	return im 
+
+
 
 if len(sys.argv) > 2:
 
@@ -50,5 +52,7 @@ if len(sys.argv) > 2:
 		else:
 			im = colorRectangle(imgFolderPath + imageName, RED)
 		im.save(destFolder + imageName)
+
+
 else:
 	print("Usage: spark-submit DetectFaces.py <img-src-folder> <img-dest-folder>")
