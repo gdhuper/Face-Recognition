@@ -1,4 +1,4 @@
-from pyspark.mllib.classification import SVMWithSGD, SVMModel
+cfrom pyspark.mllib.classification import SVMWithSGD, SVMModel
 from pyspark.mllib.regression import LabeledPoint
 from PIL import Image, ImageDraw
 from pyspark import SparkContext
