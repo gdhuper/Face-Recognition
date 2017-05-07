@@ -6,19 +6,18 @@ import threading
 from ProgressBar import printProgressBar
 
 def loadimages(dir1, dir2, outputFile, numImgs):
-
 	outFile1 = ""
 	outFile2 = ""
 	if outputFile.find(".txt") == -1:		
-		f = open(outputFile + "_" + numImgs + "_Training.txt", 'w') #training data records (70% of total images)
-		outFile1 = outputFile + "_" + numImgs + "_Training.txt" #setting name of output file
-		f1 = open(outputFile + "_" + numImgs + "_Testing.txt", 'w') # testing data records  (30 % of totla images)
-		outFile2 = outputFile + "_" + numImgs + "_Testing.txt"
+		f = open("Training"+ "_" + numImgs + "_Imgs_" + outputFile +".txt", 'w') #training data records (70% of total images)
+		outFile1 = "Training"+ "_" + numImgs + "_Imgs_" + outputFile +".txt" #setting name of output file
+		f1 = open("Testing"+ "_" + numImgs + "_Imgs_" + outputFile +".txt", 'w') # testing data records  (30 % of totla images)
+		outFile2 = "Testing"+ "_" + numImgs + "_Imgs_" + outputFile +".txt"
 	else:
-		f = open("Training_" + outputFile, 'w') #training data records (70% of total images)
-		outFile1 = "Training_" + outputFile
-		f1 = open("Testing_" + outputFile, 'w') # testing data records  (30 % of totla images)
-		outFile2 = "Testing_" + outputFile
+		f = open("Training_" + numImgs + "_Imgs_" + outputFile, 'w') #training data records (70% of total images)
+		outFile1 = "Training_" + numImgs + "_Imgs_" + outputFile
+		f1 = open("Testing_" + numImgs + "_Imgs_" + outputFile, 'w') # testing data records  (30 % of totla images)
+		outFile2 = "Testing_" + numImgs + "_Imgs_" + outputFile
 
 	# Save face images
 	imagesOfFaces = listdir(dir1)
