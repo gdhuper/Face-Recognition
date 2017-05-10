@@ -1,5 +1,6 @@
 from pyspark.mllib.classification import SVMWithSGD, SVMModel
 from pyspark.mllib.regression import LabeledPoint
+from ProgressBar import printProgressBar
 from PIL import Image, ImageDraw
 from pyspark import SparkContext
 from os import listdir
@@ -10,7 +11,7 @@ import numpy as np
 sc = SparkContext()
 
 RED = (255, 0, 0)
-GREEN = (113,202,88)
+GREEN = (0,255,0)
 
 # Draws a rectangle around a 250x250 image
 def colorRectangle(imagePath, color):
@@ -40,7 +41,11 @@ if len(sys.argv) > 2:
 		destFolder += "/"
 
 	imageList = listdir(imgFolderPath)
-
+	############################## Progress Bar
+	i = 0
+	l = len(imageList)
+	printProgressBar(i, l, prefix = ' Classifying frames:', suffix = 'Done!', length = 50)
+	############################## Progress Bar
 	for imageName in imageList:
 		im = Image.open(imgFolderPath + imageName)
 		imgVector = np.array(im).ravel()
@@ -52,6 +57,10 @@ if len(sys.argv) > 2:
 		else:
 			im = colorRectangle(imgFolderPath + imageName, RED)
 		im.save(destFolder + imageName)
+		############################## Progress Bar
+		i += 1
+		printProgressBar(i, l, prefix = ' Classifying frames:', suffix = 'Done!', length = 50)
+		############################## Progress Bar
 
 
 else:
